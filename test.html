@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Test</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket Test</h1>
+    <button onclick="sendMessage()">Send Message</button>
+    <button onclick="joinRoom()">Join Room</button>
+    <button onclick="leaveRoom()">Leave Room</button>
+    <button onclick="getActiveUsers()">Get Active Users</button>
+    
+    <script>
+        const socket = io('http://localhost:5000', {
+            transports: ['websocket'],
+        });
+
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket server:', socket.id);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from WebSocket server');
+        });
+
+        socket.on('message', (data) => {
+            console.log('Message received:', data);
+        });
+
+        socket.on('activeUsers', (users) => {
+            console.log('Active Users:', users);
+        });
+
+        function sendMessage() {
+            const message = { sender: 'TestUser', text: 'Hello from the client!' };
+            socket.emit('sendMessage', message);
+        }
+
+        function joinRoom() {
+            const roomData = { username: 'TestUser', room: 'test-room' };
+            socket.emit('joinRoom', roomData);
+        }
+
+        function leaveRoom() {
+            socket.emit('leaveRoom');
+        }
+
+        function getActiveUsers() {
+            socket.emit('getActiveUsers');
+        }
+    </script>
+</body>
+</html>
